@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<SceneGraph version="1">
+  <AspectRatio>1</AspectRatio>
+  <SceneNode>
+    <FileName>C:\Users\surface\Documents\Expression\Deep Zoom Composer Projects\UntitledProject3\Source Images\p1-2-blue2-a_y1-1.jpg</FileName>
+    <x>0</x>
+    <y>0</y>
+    <Width>1</Width>
+    <Height>1</Height>
+    <ZOrder>1</ZOrder>
+  </SceneNode>
+</SceneGraph>
