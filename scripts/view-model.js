@@ -32,7 +32,7 @@
         _navExpanderCollapsedWidth = _$navExpanderHeader.outerWidth(),
         _navExpanderCollapsedHeight = _$navExpanderHeaderContainer.outerHeight();
 
-    var viewer = OpenSeadragon({
+   const viewer = OpenSeadragon({
                     //debugMode: true,
                     //showReferenceStrip: true,
                     id: 'viewerDiv1',
@@ -51,7 +51,8 @@
                     zoomPerClick: 1.4,
                     autoResize: false, // If false, we have to handle resizing of the viewer
                     tileSources: tileSources
-                }),
+    }),
+    const annotations = new OpenSeadragon.Annotations({ viewer });
         imagingHelper = viewer.activateImagingHelper({onImageViewChanged: onImageViewChanged}),
         viewerInputHook = viewer.addViewerInputHook({hooks: [
             {tracker: 'viewer', handler: 'moveHandler', hookHandler: onHookOsdViewerMove},
