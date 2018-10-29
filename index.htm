@@ -1,0 +1,170 @@
+<html>
+<head>
+    <title>Demo Test</title>
+
+
+    <script src="openseadragon/canvas-toBlob.js"></script>
+    <script src="openseadragon/FileSaver.min.js"></script>
+    <script src="openseadragon/jquery-3.2.1.min.js"></script>
+    <script src="openseadragon/openseadragon.min.js"></script>
+
+    <script src="openseadragon/openseadragonScreenshot.js"></script>
+    <script src="openseadragon/openseadragon-annotations.js"></script>
+    <script src="openseadragon/openseadragon-scalebar.js"></script>
+
+</head>
+
+<body>
+    <div style="padding: 0 1.5em; height: 500px;">
+        <div id="openseadragon1" style="float: left; width: 1200px; height: 700px; background: black;"></div>
+
+
+        <div class="info" style="float: left; width: 200px;">
+            <div class="position"></div>
+            <div class="zoom" style="margin-top: 3em;"></div>
+        </div>
+
+        <div id="container" style="display: inline-block; margin-left:450px">
+            <textarea id="log" cols="50" , rows="20">
+        </textarea>
+            <button id="save">save log</button>
+            <button id="reset">reset</button>
+        </div>
+
+    </div>
+   
+
+
+    <script type="text/javascript">
+        var positionEl = document.querySelectorAll('.info .position')[0];
+        var zoomEl = document.querySelectorAll('.info .zoom')[0];
+
+        var viewer = new OpenSeadragon.Viewer({
+            id: "openseadragon1",
+            prefixUrl: "openseadragon/images/",
+            tileSources: "test1/GeneratedImages/dzc_output_images/nmy_2-ai.xml",
+            showNavigator: true,
+            crossOriginPolicy: "Anonymous",
+            maxZoomPixelRatio: 30
+        });
+        
+        var updateZoom = function () {
+            var zoom = viewer.viewport.getZoom(true);
+            var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
+            var viewportBounds = viewer.viewport.getBounds();
+            var tiledImage = viewer.world.getItemAt(0); // Assuming you want the first (or only) image
+            var imageBounds = tiledImage.viewportToImageRectangle(viewportBounds);
+            zoomEl.innerHTML = 'Zoom:<br>' + (Math.round(zoom * 100) / 100) +
+                '<br>Image Zoom:<br>' + (Math.round(imageZoom * 100) / 100);
+        }
+
+        viewer.addHandler('open', function () {
+
+            var tracker = new OpenSeadragon.MouseTracker({
+                element: viewer.container,
+                moveHandler: function (event) {
+                    // 
+                    var webPoint = event.position;
+                    var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
+                    var imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
+                    var zoom = viewer.viewport.getZoom(true);
+                    var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
+
+                    var viewportBounds = viewer.viewport.getBounds();
+                    var tiledImage = viewer.world.getItemAt(0); // Assuming you want the first (or only) image
+                    var imageBounds = tiledImage.viewportToImageRectangle(viewportBounds);
+
+
+                    var now = new Date();
+
+
+
+                    positionEl.innerHTML = 'Web:<br>' + webPoint.toString() +
+                        '<br>Viewport:<br>' + viewportPoint.toString() +
+                        '<br>Image:<br>' + imagePoint.toString() + '<br>ImageBound<br>' + imageBounds.toString();
+                    updateZoom();
+                    /*  var text = "Viewport " + viewportPoint.toString() + "Zoom " + (Math.round(zoom * 100) / 100) +
+                          "  time " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds() + "\n\r";
+                      $("#log").val(text + $("#log").val());*/
+                    var text = "imageBounds" + imageBounds.toString() +
+                        "  time" + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds() + "  zoom" + zoom.toString() +"  imagePoint" + imagePoint.toString() + "\n\r";
+                    $("#log").val(text + $("#log").val());
+
+                },
+                scrollHandler: function (event) {
+                   
+                    var webPoint = event.position;
+                    var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
+                    var imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
+                    var zoom = viewer.viewport.getZoom(true);
+                    var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
+
+                    var viewportBounds = viewer.viewport.getBounds();
+                    var tiledImage = viewer.world.getItemAt(0); // Assuming you want the first (or only) image
+                    var imageBounds = tiledImage.viewportToImageRectangle(viewportBounds);
+                    
+
+                    var now = new Date();
+                    
+                    
+
+                    positionEl.innerHTML = 'Web:<br>' + webPoint.toString() +
+                        '<br>Viewport:<br>' + viewportPoint.toString() +
+                        '<br>Image:<br>' + imagePoint.toString()+'<br>ImageBound<br>'+imageBounds.toString();
+                    updateZoom();
+                  /*  var text = "Viewport " + viewportPoint.toString() + "Zoom " + (Math.round(zoom * 100) / 100) +
+                        "  time " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds() + "\n\r";
+                    $("#log").val(text + $("#log").val());*/
+                    var text = "imageBounds" + imageBounds.toString() +
+                        "  time" + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds() + "  zoom" + zoom.toString() +"  imagePoint" + imagePoint.toString()+ "\n\r";
+                    $("#log").val(text + $("#log").val());
+                    
+                }
+            });
+
+            tracker.setTracking(true);
+
+            viewer.addHandler('animation', updateZoom);
+        });
+       
+
+        $(function () {
+            $("#save").click(function () {
+                var text = $("#log").val();
+                var file = new File([text], "logs.txt", { type: "text/plain;charset=utf-8" });
+                saveAs(file);
+            });
+            $("#reset").click(function () {
+                $("#log").val("");
+            });
+        })
+
+        viewer.screenshot({
+            showOptions: true, // Default is false
+            keyboardShortcut: 'p', // Default is null
+            showScreenshotControl: true // Default is true
+
+        });
+
+        viewer.initializeAnnotations();
+
+
+           viewer.scalebar({
+                type: OpenSeadragon.ScalebarType.MICROSCOPY,
+                pixelsPerMeter: 1000000.0,
+                minWidth: "75px",
+                location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
+                xOffset: 5,
+                yOffset: 10,
+                stayInsideImage: true,
+                color: "rgb(150, 150, 150)",
+                fontFamily: "arial",
+                fontColor: "rgb(100, 100, 100)",
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                fontSize: "small",
+                barThickness: 2
+            });
+
+    </script>
+</body>
+</html>
