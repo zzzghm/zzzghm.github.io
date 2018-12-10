@@ -11,7 +11,7 @@
     <script src="openseadragon/openseadragonScreenshot.js"></script>
     <script src="openseadragon/openseadragon-annotations.js"></script>
     <script src="openseadragon/openseadragon-scalebar.js"></script>
-
+   
 </head>
 
 <body>
@@ -42,12 +42,21 @@
         var viewer = new OpenSeadragon.Viewer({
             id: "openseadragon1",
             prefixUrl: "openseadragon/images/",
-            tileSources: "test1/GeneratedImages/dzc_output_images/nmy_2-ai.xml",
+            tileSources: ["1AA/1AA.xml",
+                "1AB/1AB.xml",
+                "1AC/1AC.xml",
+                "1AD/1AD.xml",
+                "1AE/1AE.xml",
+                "1AF/1AF.xml",
+                "1AG/1AG.xml"],
+          //  tileSources:"margin/GeneratedImages/dzc_output_images/c_p.xml",
+            sequenceMode: true,
             showNavigator: true,
             crossOriginPolicy: "Anonymous",
             maxZoomPixelRatio: 30
         });
-        
+      //  anno.makeAnnotatable(viewer);
+
         var updateZoom = function () {
             var zoom = viewer.viewport.getZoom(true);
             var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
